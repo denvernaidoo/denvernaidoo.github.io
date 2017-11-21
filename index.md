@@ -1,7 +1,4 @@
----
-layout: post
-title: Blogging Like a Hacker
----
+
 
 ## Welcome to your GitHub Page
 
