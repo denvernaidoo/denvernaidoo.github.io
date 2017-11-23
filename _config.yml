@@ -1,18 +1,18 @@
 baseurl: "" # The subpath of your site. Use "" if you're hosting a blog at the root level.
-url: "username.github.io" # the base hostname & protocol for your site.
+url: "denvernaidoo.github.io" # the base hostname & protocol for your site.
 
 paginate: 6 #articles per page
 paginate_path: /blog/page:num #makes pagination working
 
 # header text
-title: Your awesome site name :)
-header: Write something about you here...
+title: Denver Naidoo
+header: My thoughts on all things dev related...
 
 # for welcome page
 # to replace image go to index.html
 email:
-  address: "user@example.com"
-  text: "user (at) example.com"
+  address: "denver1983@gmail.com"
+  text: "denver1983 (at) gmail.com"
 
 # disqus comment
 disqus:
