@@ -1,4 +1,15 @@
 // Add your own custom CSS here.
+
+
+.wrapper {
+  background:#003f6f;
+}
+  
+.highlight {
+  text-decoration: none !important;
+}
+
+
 @import "pygments-tomorrow";
 
 .post-content img,
@@ -11,12 +22,4 @@
 .post-nav table {
   @extend .table;
   @extend .table-bordered;
-}
-
-.wrapper {
-  background:#003f6f;
-}
-  
-.highlight {
-  text-decoration: none !important;
 }
