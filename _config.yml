@@ -6,7 +6,7 @@ paginate_path: /blog/page:num #makes pagination working
 
 # header text
 title: Denver Naidoo
-header: .Net, Javascript and SQL concepts
+header: .Net, Javascript and SQL concepts explained
 
 # for welcome page
 # to replace image go to index.html
