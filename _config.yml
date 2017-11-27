@@ -6,7 +6,7 @@ paginate_path: /blog/page:num #makes pagination working
 
 # header text
 title: .Net Core
-header: .Net, Javascript and SQL concepts explained
+header: .Net, Javascript and SQL concepts explained 850
 
 # for welcome page
 # to replace image go to index.html
