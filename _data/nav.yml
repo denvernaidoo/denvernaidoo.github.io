@@ -1,8 +1,0 @@
-# nav items in header
-items:
-  - text: 'Blog'
-    path: '/blog'
-  - text: 'Archive'
-    path: '/archive'
-  - text: 'About'
-    path: '/about'
