@@ -25,8 +25,8 @@ The first part is the header indicating the type of token and algorithm being us
 The second part is the payload and it contains the claims.
 {% highlight json %}
 {
-  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Ethan",
-  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Administrator",
+  "name": "Ethan",
+  "role": "Administrator",
   "EmployeeNumber": "4",
   "nbf": 1509825834,
   "exp": 1541361834,
