@@ -43,6 +43,6 @@ That is the purpose of that third part of the JWT.
 
 The third part of the JWT is the signature.  It is created by taking the first two parts of the JWT (in the base64Url encoded form, with the `.` in between)
 and then applying the algorithm specified in the header (first part) of the JWT with the secret key (which is known to the API but not the client).
-This way the API can verify if the signature is valid.  If it is, then only it will trust the data in the payload.
+This way the API can verify if the signature is valid.  Only then will it trust the data in the payload.
 
 So the client could encode a role of "Super Super Administrator" in the token.  But, without knowing the secret key, would not be able to generate a valid signature.
