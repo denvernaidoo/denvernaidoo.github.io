@@ -9,7 +9,7 @@ A JSON Web Token or JWT is a standard that defines a way of sending information 
 It is a string which is seperated into three parts by `.`'s, here is an example.
 
 {% highlight plaintext %}
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZGVudmVyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsIkVtcGxveWVlTnVtYmVyIjoiNCIsIm5iZiI6MTUwOTg4MzI0NSwiZXhwIjoxNTQxNDE5MjQ1LCJpc3MiOiJUaGUgbmFtZSBvZiB0aGUgaXNzdWVyIiwiYXVkIjoiVGhlIG5hbWUgb2YgdGhlIGF1ZGllbmNlIn0.J6lR5sUK02_kinMLCoRZDBCoDgI91V7xnUVXPxcrvQY
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRXRoYW4iLCJyb2xlIjoiQWRtaW5pc3RyYXRvciIsImVtcGxveWVlbnVtYmVyIjoiNCJ9.V8YSt1fUDQOVb54bP0mt3DO-yUd1nw3irL4Z7F3SPTU
 {% endhighlight %}
 
 The first and second parts are Base64Url encoded JSON objects
