@@ -2,7 +2,7 @@
 layout: post
 title:  "JSON Web Tokens"
 date:   2018-10-30 19:18:39 +0200
-categories: jekyll update
+categories: 
 ---
 What is a JSON Web token?
 A JSON Web Token or JWT is a standard that defines a way of sending information as a JSON object.
