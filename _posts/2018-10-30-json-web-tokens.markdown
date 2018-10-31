@@ -40,7 +40,7 @@ Here the first two claims are saying that our user name is "denver" and that we 
 These first two parts are easy to decode and edit on the client side.  Try putting the second part of the token into the method `atob()` in your chrome developer tools, or pasting the token into the debugger at https://jwt.io
 So could the client using this API just Base64Url encode any values they wanted into this second part of the JWT?
 How could the API know if this was the token it sent you when it authenticated you initially?
-Thats where the next part of the token comes into play...
+That is the purpose of that third part of the JWT.
 
 The third part of the JWT is the signature.  It is created by taking the first two parts of the JWT (int the base64Url encoded form, with the `.` in between)
 and then applying the algorithm specified in the header (first part) of the JWT with the secret key (which is known to the API but not the client).
