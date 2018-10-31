@@ -27,11 +27,7 @@ The second part is the payload and it contains the claims.
 {
   "name": "Ethan",
   "role": "Administrator",
-  "EmployeeNumber": "4",
-  "nbf": 1509825834,
-  "exp": 1541361834,
-  "iss": "The name of the issuer",
-  "aud": "The name of the audience"
+  "EmployeeNumber": "4"
 }
 {% endhighlight %}
 
