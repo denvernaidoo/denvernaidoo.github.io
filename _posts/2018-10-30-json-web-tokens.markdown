@@ -27,7 +27,7 @@ The second part is the payload and it contains the claims.
 {
   "name": "Ethan",
   "role": "Administrator",
-  "EmployeeNumber": "4"
+  "employeenumber": "4"
 }
 {% endhighlight %}
 
