@@ -22,7 +22,7 @@ The first part is the header indicating the type of token and algorithm being us
 The second part is the payload and this contains the Base64Url encoded claims.
 {% highlight json %}
 {
-  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "denver",
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Ethan",
   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Administrator",
   "EmployeeNumber": "4",
   "nbf": 1509825834,
@@ -33,7 +33,7 @@ The second part is the payload and this contains the Base64Url encoded claims.
 {% endhighlight %}
 
 The claims are simply statements about the enity making the call. 
-Here the first two claims are saying that our user name is "denver" and that we have the role of "Administrator".
+Here the first two claims are saying that our user name is "Ethan" and that we have the role of "Administrator".
 
 
 
