@@ -6,7 +6,7 @@ categories: posts
 ---
 What is a JSON Web token?
 A JSON Web Token or JWT is a standard that defines a way of sending information as a JSON object.
-It is a string which is seperated into three parts by `.`, here is an example.
+It is a string which is seperated into three parts by `.`'s, here is an example.
 
 {% highlight plaintext %}
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZGVudmVyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsIkVtcGxveWVlTnVtYmVyIjoiNCIsIm5iZiI6MTUwOTg4MzI0NSwiZXhwIjoxNTQxNDE5MjQ1LCJpc3MiOiJUaGUgbmFtZSBvZiB0aGUgaXNzdWVyIiwiYXVkIjoiVGhlIG5hbWUgb2YgdGhlIGF1ZGllbmNlIn0.J6lR5sUK02_kinMLCoRZDBCoDgI91V7xnUVXPxcrvQY
@@ -45,7 +45,7 @@ So could the client using this API just Base64Url encode any values they wanted 
 How could the API know if this was the token it sent you when it authenticated you initially?
 That is the purpose of that third part of the JWT.
 
-The third part of the JWT is the signature.  It is created by taking the first two parts of the JWT (int the base64Url encoded form, with the `.` in between)
+The third part of the JWT is the signature.  It is created by taking the first two parts of the JWT (in the base64Url encoded form, with the `.` in between)
 and then applying the algorithm specified in the header (first part) of the JWT with the secret key (which is known to the API but not the client).
 This way the API can verify if the signature is valid.  If it is, then only it will trust the data in the payload.
 
