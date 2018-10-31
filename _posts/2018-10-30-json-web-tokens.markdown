@@ -31,7 +31,7 @@ The second part is the payload and it contains the claims.
 }
 {% endhighlight %}
 
-The claims are simply statements about the enity making the call. 
+The claims are simply statements about the entity making the call. 
 Here the first two claims are saying that our user name is "Ethan" and that we have the role of "Administrator".
 
 
