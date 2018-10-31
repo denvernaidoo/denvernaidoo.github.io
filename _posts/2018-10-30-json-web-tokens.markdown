@@ -19,7 +19,7 @@ The first part is the header indicating the type of token and algorithm being us
 }
 {% endhighlight %}
 
-The second part is the payload and this contains the Base64Url encoded claims.
+The second part is the payload and it contains the claims.
 {% highlight json %}
 {
   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Ethan",
