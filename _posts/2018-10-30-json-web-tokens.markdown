@@ -36,7 +36,7 @@ Here the first two claims are saying that our user name is "Ethan" and that we h
 
 
 
-These first two parts are easy to decode and edit on the client side.  Try putting the second part of the token into the method `atob()` in your chrome developer tools, or pasting the token into the debugger at [JWT.IO](https://jwt.io){:target="_blank"}
+These first two parts are easy to decode and edit on the client side.  Try putting the second part of the token into the method `atob()` in your chrome developer tools, or pasting the entire token into the debugger at [JWT.IO](https://jwt.io){:target="_blank"}
 So could the client using this API just Base64Url encode any values they wanted into this second part of the JWT?
 How could the API know if this was the token it sent you when it authenticated you initially?
 That is the purpose of that third part of the JWT.
