@@ -4,7 +4,7 @@
 
 layout: home
 ---
-<img src="/assets/dilbert.gif" alt="image-title-here" class="img-responsive" style="
+<img src="/assets/view.gif" alt="image-title-here" class="img-responsive" style="
     width: 100%;
 ">
 
