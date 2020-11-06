@@ -28,8 +28,14 @@ $( document ).ready(function() {
     $(document).on("click",".btn-note", function() {
         var note = $(this).data("note");
         var octave = $(this).data("octave");
-        var piano = Synth.createInstrument('piano');
-        piano.play(note, octave, 2);
+        src = Synth.generate("0", note, octave, 2);
+		container = new Audio(src);
+		container.addEventListener('ended', function() { container = null; });
+		container.addEventListener('loadeddata', function(e) { e.target.play(); });
+		container.autoplay = false;
+		container.setAttribute('type', 'audio/wav');
+		container.load();
+		return container;
     });
 
     $(".lyric-line").first().click();
