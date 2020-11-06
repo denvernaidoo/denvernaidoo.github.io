@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="/scripts/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col-md-8">
+
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h1 class="display-4">
+                            Still
+
+                        </h1>
+                        <h4>
+                            <small class="text-muted">Hillsong Worship</small>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <div><span id="chosen-one" class="lyric-line text-primary" data-line-number="1" data-notes="E3,G3,C3">Hide me now</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="2" data-notes="C3,A3,D3,D3">Under you wings</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="3" data-notes="E3,G3,C3">Cover me</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="4" data-notes="C3,F3,E3,D3,C3,D3">Within you mighty hand</span></div>
+                            <div class="button-bar" style="min-height:100px"></div>
+                        </div>
+                        <div class="card-text">
+                            <div><span class="lyric-line text-muted" data-line-number="6" data-notes="E3,G3,C4,B3,A3,A3,A3,G3,G3">When the oceans rise and thunders roar</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="7" data-notes="E3,G3,C4,B3,A3,A3,B3,C4,C4">I will soar with you above the storm</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="8" data-notes="E3,G3,C4,B3,A3,A3,A3,G3,G3">Father you are king over the flood</span></div>
+                            <div><span class="lyric-line text-muted" data-line-number="8" data-notes="E3,F3,G3,C3,E3,D3,C3,C3">I will be still and know you are God</span></div>
+                            <div class="button-bar" style="min-height:100px"></div>
+                        </div>
+                        
+                    </div>
+                    <div class="card-footer text-muted">
+                        Copyright 2020
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="button-template" type="text/template">
+        <button type="button" class="btn btn-info btn-note" data-note="{{note}}" data-octave="{{octave}}">
+            <div class="font-weight-bold">{{note}}</div>
+            <div class="font-weight-lighter">{{octave}}</div>
+        </button>
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="/scripts/audiosynth.js"></script>
+    <script src="/scripts/main.js"></script>
+</body>
+
+</html>
