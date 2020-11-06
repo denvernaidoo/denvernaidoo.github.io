@@ -29,7 +29,7 @@ $( document ).ready(function() {
         var note = $(this).data("note");
         var octave = $(this).data("octave");
         var piano = Synth.createInstrument('piano');
-        piano.play(note, octave, 5);
+        piano.play(note, octave, 2);
     });
 
     $(".lyric-line").first().click();
