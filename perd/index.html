@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Page</title>
+  <style>
+    /* Style for the story content */
+    .story-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
+    .afrikaans-line {
+      color: #000;
+    }
+    .english-line {
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="story-container">
+    <h1 id="storyTitle"></h1>
+    <div id="storyContent"></div>
+  </div>
+
+  <script>
+    // Function to fetch text content from a file asynchronously
+    async function fetchTextFile(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error fetching ${url}: ${response.statusText}`);
+      }
+      return await response.text();
+    }
+
+    // Fetch story content from text files
+    Promise.all([
+      fetchTextFile('storyTitle.txt'),
+      fetchTextFile('afrikaansSentences.txt'),
+      fetchTextFile('englishTranslations.txt')
+    ]).then(([storyTitle, afrikaansSentences, englishTranslations]) => {
+      const afrikaansLines = afrikaansSentences.trim().split('\n');
+      const englishLines = englishTranslations.trim().split('\n');
+
+      const storyTitleElement = document.getElementById('storyTitle');
+      const storyContentElement = document.getElementById('storyContent');
+
+      // Set the story title
+      document.title = storyTitle;
+      storyTitleElement.textContent = storyTitle;
+
+      // Display the story content
+      for (let i = 0; i < afrikaansLines.length; i++) {
+        const afrikaansLine = afrikaansLines[i];
+        const englishLine = englishLines[i];
+
+        const afrikaansElement = document.createElement('p');
+        afrikaansElement.classList.add('afrikaans-line');
+        afrikaansElement.textContent = afrikaansLine;
+
+        const englishElement = document.createElement('p');
+        englishElement.classList.add('english-line');
+        englishElement.textContent = englishLine;
+
+        storyContentElement.appendChild(afrikaansElement);
+        storyContentElement.appendChild(englishElement);
+
+        if (i < afrikaansLines.length - 1) {
+          storyContentElement.appendChild(document.createElement('hr')); // Add a horizontal line between sentences
+        }
+      }
+    }).catch(error => {
+      console.error('Error fetching story content:', error);
+    });
+  </script>
+</body>
+</html>
