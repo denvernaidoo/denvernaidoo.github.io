@@ -1,21 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <title>Stories</title>
-  <!-- Add Bootstrap CSS from CDN -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Here you go!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            display: inline-flex;
+            align-items: center;
+            font-size: 2rem;
+        }
+        .emoji {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="mt-5">Stories</h1>
-    <ul class="list-group mt-3">
-      <li class="list-group-item"><a href="perd/index.html">‘n Perd wat kan lees en tel? (A horse that can read and count?)</a></li>
-      <li class="list-group-item"><a href="diebeursie/index.html">Die beursie (The wallet)</a></li>
-      <!-- Add more stories as needed -->
-    </ul>
-  </div>
+    <div class="container">
+        <span class="emoji">🔥</span>
+        <span id="dayCount">0</span>
+    </div>
+
+    <script>
+        function calculateDaysSince(targetDate) {
+            const today = new Date();
+            const target = new Date(targetDate);
+            const difference = today - target;
+            return Math.floor(difference / (1000 * 60 * 60 * 24));
+        }
+
+        document.getElementById('dayCount').textContent = calculateDaysSince('2024-09-10');
+    </script>
 </body>
 </html>
