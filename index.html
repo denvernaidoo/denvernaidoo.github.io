@@ -32,7 +32,7 @@
     
     <script>
         const arrows = ["DownArrow.png", "UpArrow.png", "LeftArrow.png", "RightArrow.png"];
-        const cars = ["HoodUpCar.png", "HoowDownCar.png"];
+        const cars = ["HoodUpCar.png", "HoodDownCar.png"];
 
         let touchStartX = 0;
         let touchStartY = 0;
@@ -45,13 +45,13 @@
 
         function getCorrectKey(arrowImage, carImage) {
             if (arrowImage === "UpArrow.png" && carImage === "HoodUpCar.png") return "ArrowDown";
-            if (arrowImage === "UpArrow.png" && carImage === "HoowDownCar.png") return "ArrowUp";
+            if (arrowImage === "UpArrow.png" && carImage === "HoodDownCar.png") return "ArrowUp";
             if (arrowImage === "DownArrow.png" && carImage === "HoodUpCar.png") return "ArrowUp";
-            if (arrowImage === "DownArrow.png" && carImage === "HoowDownCar.png") return "ArrowDown";
+            if (arrowImage === "DownArrow.png" && carImage === "HoodDownCar.png") return "ArrowDown";
             if (arrowImage === "LeftArrow.png" && carImage === "HoodUpCar.png") return "ArrowLeft";
-            if (arrowImage === "LeftArrow.png" && carImage === "HoowDownCar.png") return "ArrowRight";
+            if (arrowImage === "LeftArrow.png" && carImage === "HoodDownCar.png") return "ArrowRight";
             if (arrowImage === "RightArrow.png" && carImage === "HoodUpCar.png") return "ArrowRight";
-            if (arrowImage === "RightArrow.png" && carImage === "HoowDownCar.png") return "ArrowLeft";
+            if (arrowImage === "RightArrow.png" && carImage === "HoodDownCar.png") return "ArrowLeft";
             return "ArrowUp"; // Default fallback
         }
 
