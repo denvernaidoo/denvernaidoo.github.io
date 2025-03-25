@@ -3,48 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Days Since September 10, 2024</title>
+    <title>Arrow Game</title>
     <style>
         body {
+            text-align: center;
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            overflow: hidden; /* Prevents scrolling */
+            height: 100vh; /* Ensures the body covers the full screen */
         }
-        .container {
-            display: inline-flex;
-            align-items: center;
-            font-size: 2rem;
-        }
-        .emoji {
-            margin-right: 10px;
-        }
-        #dayCount {
-            color: orange;
-        }
-        .hand-heart {
+        #arrow-container, #car-container {
             margin-top: 20px;
-            font-size: 2.5rem;
+        }
+        img {
+            width: 100px;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <span class="emoji">🔥</span>
-        <span id="dayCount">0</span>
+    <div id="arrow-container">
+        <img id="arrow" src="" alt="Arrow">
     </div>
+    <div id="car-container">
+        <img id="car" src="" alt="Car">
+    </div>
+    <p id="message"></p>
+    <p id="last-result"></p>
+    
     <script>
-        function calculateDaysSince(targetDate) {
-            const today = new Date();
-            const target = new Date(targetDate);
-            const difference = today - target;
-            return Math.floor(difference / (1000 * 60 * 60 * 24));
+        const arrows = ["DownArrow.png", "UpArrow.png", "LeftArrow.png", "RightArrow.png"];
+        const cars = ["HoodUpCar.png", "HoowDownCar.png"];
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        document.getElementById('dayCount').textContent = calculateDaysSince('2024-09-10');
+        function getCorrectKey(arrowImage, carImage) {
+            if (arrowImage === "UpArrow.png" && carImage === "HoodUpCar.png") return "ArrowDown";
+            if (arrowImage === "UpArrow.png" && carImage === "HoowDownCar.png") return "ArrowUp";
+            if (arrowImage === "DownArrow.png" && carImage === "HoodUpCar.png") return "ArrowUp";
+            if (arrowImage === "DownArrow.png" && carImage === "HoowDownCar.png") return "ArrowDown";
+            if (arrowImage === "LeftArrow.png" && carImage === "HoodUpCar.png") return "ArrowLeft";
+            if (arrowImage === "LeftArrow.png" && carImage === "HoowDownCar.png") return "ArrowRight";
+            if (arrowImage === "RightArrow.png" && carImage === "HoodUpCar.png") return "ArrowRight";
+            if (arrowImage === "RightArrow.png" && carImage === "HoowDownCar.png") return "ArrowLeft";
+            return "ArrowUp"; // Default fallback
+        }
+
+        function startGame() {
+            const arrowImage = getRandomItem(arrows);
+            const carImage = getRandomItem(cars);
+            document.getElementById("arrow").src = arrowImage;
+            document.getElementById("car").src = carImage;
+            document.getElementById("message").textContent = "Swipe the correct direction!";
+            document.getElementById("arrow").dataset.key = getCorrectKey(arrowImage, carImage);
+        }
+
+        function handleSwipe(direction) {
+            const correctKey = document.getElementById("arrow").dataset.key;
+            const result = direction === correctKey ? "Correct!" : "Wrong!";
+            document.getElementById("last-result").textContent = result;
+            setTimeout(startGame, 1000);
+        }
+
+        // Prevent scrolling on mobile
+        document.addEventListener("touchstart", (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener("touchmove", (e) => {
+            e.preventDefault(); // Prevents scrolling & pull-to-refresh
+        }, { passive: false });
+
+        document.addEventListener("touchend", (e) => {
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe (left or right)
+                if (deltaX > 0) {
+                    handleSwipe("ArrowRight"); // Right swipe
+                } else {
+                    handleSwipe("ArrowLeft"); // Left swipe
+                }
+            } else {
+                // Vertical swipe (up or down)
+                if (deltaY > 0) {
+                    handleSwipe("ArrowDown"); // Down swipe
+                } else {
+                    handleSwipe("ArrowUp"); // Up swipe
+                }
+            }
+        });
+
+        startGame();
     </script>
 </body>
 </html>
