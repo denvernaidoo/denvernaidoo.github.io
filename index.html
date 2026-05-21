@@ -1,1 +1,443 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>AssessmentApp Client</title><script defer="defer" src="/js/chunk-vendors.5ae16fe8.js"></script><script defer="defer" src="/js/app.f70a8e23.js"></script><link href="/css/app.5de516ae.css" rel="stylesheet"></head><body><div id="app"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car – Longitudinal Axis Rotation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d0d1a; overflow: hidden; font-family: sans-serif; }
+    canvas { display: block; }
+    #info {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.45);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    #speed {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+    }
+    #camInfo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(79,195,247,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #4fc3f7;
+      font-size: 12px;
+      font-family: monospace;
+      line-height: 1.8;
+      min-width: 220px;
+    }
+    #camInfo span { color: #fff; }
+    #copyCam {
+      margin-top: 8px;
+      display: block;
+      background: rgba(79,195,247,0.15);
+      border: 1px solid rgba(79,195,247,0.4);
+      color: #4fc3f7;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 11px;
+      width: 100%;
+    }
+    #copyCam:hover { background: rgba(79,195,247,0.3); }
+    #resetBtn {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.75);
+      border-radius: 6px;
+      padding: 6px 18px;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    #resetBtn:hover { background: rgba(255,255,255,0.15); }
+    #arrow {
+      position: absolute;
+      font-size: 56px;
+      color: rgba(255,255,255,0.9);
+      line-height: 1;
+      user-select: none;
+      text-shadow: 0 0 20px rgba(79,195,247,0.8);
+      transition: opacity 0.12s;
+    }
+  </style>
+</head>
+<body>
+<div id="info">Drag to orbit &nbsp;|&nbsp; scroll to zoom</div>
+<button id="resetBtn">Reset</button>
+<div id="arrow">↑</div>
+<div id="camInfo">
+  pos &nbsp;x: <span id="cx">0</span><br>
+  pos &nbsp;y: <span id="cy">0</span><br>
+  pos &nbsp;z: <span id="cz">0</span><br>
+  target x: <span id="tx">0</span><br>
+  target y: <span id="ty">0</span><br>
+  target z: <span id="tz">0</span>
+  <button id="copyCam">Copy position</button>
+</div>
+<div id="speed">
+  Speed: <input id="speedSlider" type="range" min="0" max="5" step="0.1" value="0.4" />
+  <div id="rotReadout" style="margin-top:5px;font-family:monospace;font-size:11px;color:#4fc3f7;"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ─── Scene ───────────────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d0d1a);
+scene.fog = new THREE.Fog(0x0d0d1a, 18, 35);
+
+// ─── Camera ──────────────────────────────────────────────────────────────────
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 8, -9);
+camera.lookAt(0, 0, 0);
+
+// ─── Renderer ────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(devicePixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+// ─── Controls ────────────────────────────────────────────────────────────────
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.minDistance = 3;
+controls.maxDistance = 25;
+controls.target.set(0, 0, 0);
+
+// ─── Lights ──────────────────────────────────────────────────────────────────
+const ambient = new THREE.AmbientLight(0x223366, 1.2);
+scene.add(ambient);
+
+const sun = new THREE.DirectionalLight(0xffffff, 3);
+sun.position.set(5, 10, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 40;
+sun.shadow.camera.left = -10;
+sun.shadow.camera.right = 10;
+sun.shadow.camera.top = 10;
+sun.shadow.camera.bottom = -10;
+scene.add(sun);
+
+const rimLight = new THREE.DirectionalLight(0x4fc3f7, 1.5);
+rimLight.position.set(-4, 3, -6);
+scene.add(rimLight);
+
+const fillLight = new THREE.PointLight(0xff6030, 1.0, 15);
+fillLight.position.set(-3, -1, 3);
+scene.add(fillLight);
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function mat(color, opts = {}) {
+  return new THREE.MeshStandardMaterial({ color, roughness: 0.35, metalness: 0.6, ...opts });
+}
+
+function box(w, h, d, material, px = 0, py = 0, pz = 0, rx = 0, ry = 0, rz = 0) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+  mesh.position.set(px, py, pz);
+  mesh.rotation.set(rx, ry, rz);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+function cyl(rt, rb, h, segs, material, px = 0, py = 0, pz = 0, rx = 0, ry = 0, rz = 0) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, segs), material);
+  mesh.position.set(px, py, pz);
+  mesh.rotation.set(rx, ry, rz);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// ─── Car group (pivot for longitudinal rotation) ──────────────────────────────
+const car = new THREE.Group();
+scene.add(car);
+
+// Materials
+const bodyMat   = mat(0xe63946, { roughness: 0.25, metalness: 0.75 });   // red paint
+const darkMat   = mat(0x1a1a2e, { roughness: 0.5,  metalness: 0.3  });   // dark plastic
+const glassMat  = mat(0x90caf9, { roughness: 0.05, metalness: 0.0, transparent: true, opacity: 0.45 });
+const chromeMat = mat(0xd4d4d4, { roughness: 0.1,  metalness: 1.0  });
+const wheelMat  = mat(0x111111, { roughness: 0.8,  metalness: 0.1  });
+const rimMat    = mat(0xc0c0c0, { roughness: 0.15, metalness: 0.9  });
+const lightMat  = new THREE.MeshStandardMaterial({ color: 0xfffde7, emissive: 0xffe082, emissiveIntensity: 2.5, roughness: 0.1 });
+const tailMat   = new THREE.MeshStandardMaterial({ color: 0xff1744, emissive: 0xff1744, emissiveIntensity: 1.8, roughness: 0.1 });
+const undersideMat = mat(0x080808, { roughness: 0.9, metalness: 0.1 });
+
+// ── Chassis / lower body ─────────────────────────────────────────────────────
+const chassis = box(2.0, 0.32, 4.6, bodyMat, 0, 0, 0);
+car.add(chassis);
+
+// ── Underside (black floor panel) ────────────────────────────────────────────
+car.add(box(2.0, 0.02, 4.6, undersideMat, 0, -0.17, 0));
+
+// ── Sills / side skirts ──────────────────────────────────────────────────────
+car.add(box(0.08, 0.18, 4.0, darkMat, -1.04, -0.07, 0));
+car.add(box(0.08, 0.18, 4.0, darkMat,  1.04, -0.07, 0));
+
+// ── Main body upper shell (cabin area wider) ──────────────────────────────────
+const bodyUpper = box(2.0, 0.38, 4.6, bodyMat, 0, 0.35, 0);
+car.add(bodyUpper);
+
+// ── Cabin / roof ─────────────────────────────────────────────────────────────
+// Slightly tapered roof using scaled box
+const roofGeo = new THREE.BoxGeometry(1.65, 0.55, 2.1);
+const roof = new THREE.Mesh(roofGeo, bodyMat);
+roof.position.set(0, 0.82, -0.1);
+roof.castShadow = true;
+car.add(roof);
+
+// ── Windscreen (front glass) ──────────────────────────────────────────────────
+const wsFront = box(1.58, 0.48, 0.08, glassMat, 0, 0.72, 0.96);
+wsFront.rotation.x = -Math.PI * 0.18;
+car.add(wsFront);
+
+// ── Rear windscreen ───────────────────────────────────────────────────────────
+const wsRear = box(1.52, 0.44, 0.08, glassMat, 0, 0.72, -1.06);
+wsRear.rotation.x = Math.PI * 0.18;
+car.add(wsRear);
+
+// ── Side windows ─────────────────────────────────────────────────────────────
+car.add(box(0.06, 0.35, 0.78, glassMat, -0.82, 0.79,  0.28));
+car.add(box(0.06, 0.35, 0.78, glassMat,  0.82, 0.79,  0.28));
+car.add(box(0.06, 0.32, 0.62, glassMat, -0.82, 0.79, -0.58));
+car.add(box(0.06, 0.32, 0.62, glassMat,  0.82, 0.79, -0.58));
+
+// ── Bonnet / hood ────────────────────────────────────────────────────────────
+const hood = box(1.95, 0.12, 1.35, bodyMat, 0, 0.53, 1.72);
+hood.rotation.x = Math.PI * 0.07;
+car.add(hood);
+
+// ── Trunk lid ─────────────────────────────────────────────────────────────────
+const trunk = box(1.88, 0.12, 0.9, bodyMat, 0, 0.53, -1.88);
+trunk.rotation.x = -Math.PI * 0.06;
+car.add(trunk);
+
+// ── Front bumper ──────────────────────────────────────────────────────────────
+car.add(box(1.9, 0.28, 0.16, darkMat, 0, 0.06, 2.36));
+// Bumper grille opening
+car.add(box(0.9, 0.14, 0.1, darkMat, 0, 0.06, 2.43));
+
+// ── Rear bumper ───────────────────────────────────────────────────────────────
+car.add(box(1.9, 0.28, 0.16, darkMat, 0, 0.06, -2.36));
+
+// ── Headlights ───────────────────────────────────────────────────────────────
+car.add(box(0.38, 0.14, 0.07, lightMat, -0.68, 0.2, 2.4));
+car.add(box(0.38, 0.14, 0.07, lightMat,  0.68, 0.2, 2.4));
+
+// ── Tail lights ──────────────────────────────────────────────────────────────
+car.add(box(0.42, 0.13, 0.07, tailMat, -0.64, 0.24, -2.38));
+car.add(box(0.42, 0.13, 0.07, tailMat,  0.64, 0.24, -2.38));
+
+// ── Exhaust pipes ─────────────────────────────────────────────────────────────
+car.add(cyl(0.055, 0.055, 0.28, 16, chromeMat, -0.42, -0.14, -2.45, Math.PI/2, 0, 0));
+car.add(cyl(0.055, 0.055, 0.28, 16, chromeMat, -0.62, -0.14, -2.45, Math.PI/2, 0, 0));
+
+// ── Wing mirrors ─────────────────────────────────────────────────────────────
+car.add(box(0.22, 0.09, 0.12, bodyMat, -1.12, 0.62,  0.72));
+car.add(box(0.22, 0.09, 0.12, bodyMat,  1.12, 0.62,  0.72));
+
+// ── Roof antenna ─────────────────────────────────────────────────────────────
+car.add(cyl(0.012, 0.008, 0.35, 8, chromeMat, 0.6, 1.18, -0.45, 0, 0, 0));
+
+// ─── Wheels ──────────────────────────────────────────────────────────────────
+// Wheel positions: [x, z] pairs, y = -0.18 (axle height)
+const wheelPositions = [
+  [-1.05,  1.55],
+  [ 1.05,  1.55],
+  [-1.05, -1.55],
+  [ 1.05, -1.55],
+];
+
+const wheelGroups = [];
+
+wheelPositions.forEach(([wx, wz]) => {
+  const wg = new THREE.Group();
+  wg.position.set(wx, -0.18, wz);
+
+  // Tyre
+  const tyre = new THREE.Mesh(
+    new THREE.TorusGeometry(0.38, 0.15, 16, 48),
+    wheelMat
+  );
+  tyre.rotation.y = Math.PI / 2;
+  tyre.castShadow = true;
+  wg.add(tyre);
+
+  // Rim face
+  const rimFace = cyl(0.3, 0.3, 0.04, 6, rimMat, 0, 0, 0, 0, 0, Math.PI/2);
+  wg.add(rimFace);
+
+  // Spoke detail (5 spokes)
+  for (let i = 0; i < 5; i++) {
+    const angle = (i / 5) * Math.PI * 2;
+    const spoke = box(0.05, 0.22, 0.03, rimMat,
+      Math.cos(angle) * 0.13, Math.sin(angle) * 0.13, 0,
+      0, 0, angle
+    );
+    wg.add(spoke);
+  }
+
+  // Centre cap
+  const cap = cyl(0.07, 0.07, 0.06, 16, chromeMat, 0, 0, 0, 0, 0, Math.PI/2);
+  wg.add(cap);
+
+  car.add(wg);
+  wheelGroups.push(wg);
+});
+
+// ─── Ground reflection plane ──────────────────────────────────────────────────
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x111122,
+  roughness: 0.15,
+  metalness: 0.8,
+});
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -2.2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ─── Grid overlay on ground ───────────────────────────────────────────────────
+const gridHelper = new THREE.GridHelper(30, 30, 0x223366, 0x223366);
+gridHelper.position.y = -2.19;
+gridHelper.material.opacity = 0.4;
+gridHelper.material.transparent = true;
+scene.add(gridHelper);
+
+// ─── Particle stars ───────────────────────────────────────────────────────────
+const starGeo = new THREE.BufferGeometry();
+const starCount = 800;
+const starPos = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount * 3; i++) starPos[i] = (Math.random() - 0.5) * 60;
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, sizeAttenuation: true }));
+scene.add(stars);
+
+// ─── Speed control ────────────────────────────────────────────────────────────
+const slider = document.getElementById('speedSlider');
+let speedMult = 0.399;
+slider.addEventListener('input', () => { speedMult = parseFloat(slider.value); });
+
+// ─── Animation ───────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+(function animate() {
+  requestAnimationFrame(animate);
+
+  const dt = clock.getDelta();
+  const elapsed = clock.elapsedTime;
+
+  // Rotate car on its longitudinal axis (Z = front-to-back axis) — anti-clockwise
+  // 2π / 1.14 ≈ 5.513 rad/s → one full rotation per 1.14 s at speedMult = 1
+  car.rotation.z -= dt * speedMult * (2 * Math.PI / 1.14);
+
+  // Subtle floating bob
+  car.position.y = Math.sin(elapsed * 0.6) * 0.12;
+
+  // Update camera info panel
+  const rps = speedMult / 1.14;
+  const period = speedMult > 0 ? (1.14 / speedMult).toFixed(2) : '∞';
+  document.getElementById('rotReadout').textContent =
+    `${rps.toFixed(3)} rot/s  |  ${period} s/rot  |  ${(rps * 60).toFixed(1)} RPM`;
+
+  document.getElementById('cx').textContent = camera.position.x.toFixed(2);
+  document.getElementById('cy').textContent = camera.position.y.toFixed(2);
+  document.getElementById('cz').textContent = camera.position.z.toFixed(2);
+  document.getElementById('tx').textContent = controls.target.x.toFixed(2);
+  document.getElementById('ty').textContent = controls.target.y.toFixed(2);
+  document.getElementById('tz').textContent = controls.target.z.toFixed(2);
+
+  controls.update();
+  renderer.render(scene, camera);
+})();
+
+document.getElementById('copyCam').addEventListener('click', () => {
+  const p = camera.position;
+  const t = controls.target;
+  const txt = `camera.position.set(${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)});\ncontrols.target.set(${t.x.toFixed(2)}, ${t.y.toFixed(2)}, ${t.z.toFixed(2)});`;
+  navigator.clipboard.writeText(txt);
+  document.getElementById('copyCam').textContent = 'Copied!';
+  setTimeout(() => document.getElementById('copyCam').textContent = 'Copy position', 1500);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  camera.position.set(0, 8, -9);
+  controls.target.set(0, 0, 0);
+  controls.update();
+  slider.value = 0.4;
+  speedMult = 0.399;
+});
+
+// ─── Random arrow ────────────────────────────────────────────────────────────
+const arrows = ['\u2191', '\u2193', '\u2190', '\u2192']; // ↑ ↓ ← →
+const arrowPositions = {
+  '\u2191': { top: '10%',  bottom: '',    left: '50%', right: '',   transform: 'translateX(-50%)' },
+  '\u2193': { top: '',     bottom: '10%', left: '50%', right: '',   transform: 'translateX(-50%)' },
+  '\u2190': { top: '50%',  bottom: '',    left: '8%',  right: '',   transform: 'translateY(-50%)' },
+  '\u2192': { top: '50%',  bottom: '',    left: '',    right: '8%', transform: 'translateY(-50%)' },
+};
+const arrowEl = document.getElementById('arrow');
+function newArrow() {
+  arrowEl.style.opacity = '0';
+  setTimeout(() => {
+    const ch = arrows[Math.floor(Math.random() * 4)];
+    arrowEl.textContent = ch;
+    const pos = arrowPositions[ch];
+    arrowEl.style.top       = pos.top;
+    arrowEl.style.bottom    = pos.bottom;
+    arrowEl.style.left      = pos.left;
+    arrowEl.style.right     = pos.right;
+    arrowEl.style.transform = pos.transform;
+    arrowEl.style.opacity = '1';
+  }, 120);
+}
+newArrow();
+setInterval(newArrow, 5000);
+
+// ─── Resize ──────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
