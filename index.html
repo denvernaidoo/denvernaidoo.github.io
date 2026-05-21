@@ -81,10 +81,9 @@
   </style>
 </head>
 <body>
-<div id="info">Drag to orbit &nbsp;|&nbsp; scroll to zoom</div>
 <button id="resetBtn">Reset</button>
 <div id="arrow">↑</div>
-<div id="camInfo">
+<div id="camInfo" style="display:none">
   pos &nbsp;x: <span id="cx">0</span><br>
   pos &nbsp;y: <span id="cy">0</span><br>
   pos &nbsp;z: <span id="cz">0</span><br>
@@ -94,8 +93,9 @@
   <button id="copyCam">Copy position</button>
 </div>
 <div id="speed">
-  Speed: <input id="speedSlider" type="range" min="0" max="5" step="0.1" value="0.4" />
-  <div id="rotReadout" style="margin-top:5px;font-family:monospace;font-size:11px;color:#4fc3f7;"></div>
+  <button id="speedMinus" style="padding:6px 10px;margin-right:6px;cursor:pointer;border-radius:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">−</button>
+  <button id="speedPlus" style="padding:6px 10px;cursor:pointer;border-radius:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">+</button>
+  <div id="rpmReadout" style="margin-top:5px;font-family:monospace;font-size:11px;color:#4fc3f7;"></div>
 </div>
 
 <script type="importmap">
@@ -351,10 +351,28 @@ starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
 const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, sizeAttenuation: true }));
 scene.add(stars);
 
-// ─── Speed control ────────────────────────────────────────────────────────────
-const slider = document.getElementById('speedSlider');
-let speedMult = 0.399;
-slider.addEventListener('input', () => { speedMult = parseFloat(slider.value); });
+// ─── Speed control (buttons, RPM only) ───────────────────────────────────────
+const speedPlus = document.getElementById('speedPlus');
+const speedMinus = document.getElementById('speedMinus');
+const rpmReadout = document.getElementById('rpmReadout');
+let speedMult = 0.4; // initial multiplier (was slider value)
+
+function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+
+function updateRPMDisplay() {
+  const rpm = (speedMult / 1.14) * 60;
+  rpmReadout.textContent = `${rpm.toFixed(1)} RPM`;
+}
+
+speedPlus.addEventListener('click', () => {
+  speedMult = clamp(Math.round((speedMult + 0.1) * 100) / 100, 0, 5);
+  updateRPMDisplay();
+});
+
+speedMinus.addEventListener('click', () => {
+  speedMult = clamp(Math.round((speedMult - 0.1) * 100) / 100, 0, 5);
+  updateRPMDisplay();
+});
 
 // ─── Animation ───────────────────────────────────────────────────────────────
 const clock = new THREE.Clock();
@@ -373,10 +391,8 @@ const clock = new THREE.Clock();
   car.position.y = Math.sin(elapsed * 0.6) * 0.12;
 
   // Update camera info panel
-  const rps = speedMult / 1.14;
-  const period = speedMult > 0 ? (1.14 / speedMult).toFixed(2) : '∞';
-  document.getElementById('rotReadout').textContent =
-    `${rps.toFixed(3)} rot/s  |  ${period} s/rot  |  ${(rps * 60).toFixed(1)} RPM`;
+  const rpm = (speedMult / 1.14) * 60;
+  document.getElementById('rpmReadout').textContent = `${rpm.toFixed(1)} RPM`;
 
   document.getElementById('cx').textContent = camera.position.x.toFixed(2);
   document.getElementById('cy').textContent = camera.position.y.toFixed(2);
